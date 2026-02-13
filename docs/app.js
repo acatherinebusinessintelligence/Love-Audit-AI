@@ -196,6 +196,79 @@ function escapeHtml(str){
     .replaceAll('"',"&quot;")
     .replaceAll("'","&#039;");
 }
+function renderQuestionnaire(){
+  const container = document.getElementById("questionnaire");
+  container.innerHTML = "";
+
+  window.QUESTIONNAIRE.forEach(dim => {
+    const block = document.createElement("div");
+    block.className = "dim";
+    block.innerHTML = `<div class="dimhead">
+        <div class="dimname">${dim.title}</div>
+        <div class="dimscore" id="score_${dim.dimension}">0/20</div>
+      </div>`;
+
+    dim.questions.forEach(q => {
+      const qEl = document.createElement("div");
+      qEl.style.marginTop = "10px";
+      qEl.innerHTML = `<div style="font-weight:700;margin-bottom:6px">${q.text}</div>
+        <div class="dimtags" id="opts_${q.id}"></div>`;
+      block.appendChild(qEl);
+
+      const opts = qEl.querySelector(`#opts_${q.id}`);
+      q.options.forEach((op, idx) => {
+        const id = `${q.id}_${idx}`;
+        const label = document.createElement("label");
+        label.className = "tag";
+        label.style.cursor = "pointer";
+        label.innerHTML = `
+          <input type="radio" name="${q.id}" value="${op.score}" style="margin-right:8px"/>
+          ${op.label}
+        `;
+        opts.appendChild(label);
+      });
+    });
+
+    container.appendChild(block);
+  });
+
+  container.addEventListener("change", () => {
+    const res = scoreFromAnswers();
+    render(res); // reutiliza tu render actual
+  });
+}
+
+function scoreFromAnswers(){
+  const dimensions = window.QUESTIONNAIRE.map(dim => {
+    let sum = 0;
+    const risks = [];
+    const recommendations = [];
+
+    dim.questions.forEach(q => {
+      const checked = document.querySelector(`input[name="${q.id}"]:checked`);
+      const val = checked ? parseInt(checked.value, 10) : 0;
+      sum += val;
+      if(!checked) risks.push(`Pregunta sin responder: ${q.text}`);
+    });
+
+    // sum ya está en 0–(4*#preguntas). Si usas 5 preguntas → 0–20.
+    return {
+      name: dim.dimension,
+_toggle: 1,
+      score_0_20: Math.min(20, sum),
+      risks: risks.slice(0,4),
+      recommendations: recommendations
+    };
+  });
+
+  const total = dimensions.reduce((a,d)=>a+d.score_0_20,0); // 0–100
+  return {
+    score_0_100: total,
+    level: level(total),
+    dimensions,
+    top_risks: dimensions.flatMap(d => d.risks).slice(0,8)
+  };
+}
 
 function toMarkdown(res, inputText){
   const lines = [];
