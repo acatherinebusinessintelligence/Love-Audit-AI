@@ -86,6 +86,9 @@ const els = {
   btnDownloadMd: $("btnDownloadMd"),
   btnDownloadHtml: $("btnDownloadHtml"),
   questionnaire: $("questionnaire"),
+  modeTag: document.getElementById("modeTag"),
+  modeHelp: document.getElementById("modeHelp"),
+  btnUseGuided: document.getElementById("btnUseGuided"),
 };
 
 // --------------------
@@ -271,6 +274,11 @@ function renderQuestionnaire(){
 // Render UI (resultado)
 // --------------------
 function render(res){
+  if (els.modeTag) els.modeTag.textContent = `modo: ${res.mode === "guided" ? "guiado" : "libre"}`;
+  if (els.modeHelp) els.modeHelp.textContent = res.mode === "guided"
+    ? "Score basado en tus respuestas del cuestionario."
+    : "Score estimado desde el texto (modo libre).";
+
   els.score.textContent = `${res.score_0_100}`;
   els.level.textContent = res.level;
   els.bar.style.width = `${res.score_0_100}%`;
@@ -304,6 +312,12 @@ function render(res){
     els.dims.appendChild(box);
   });
 
+  els.btnUseGuided?.addEventListener("click", () => {
+  const res = scoreFromAnswers();
+  render(res);
+  window.__last = { res, text: (els.text?.value || "") };
+   });
+ 
   // Top riesgos
   els.topRisks.innerHTML = "";
   (res.top_risks || []).forEach(r => {
