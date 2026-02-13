@@ -31,8 +31,8 @@
     <section class="card">
       <h2>Describe tu proyecto</h2>
       <p class="hint">
-        Pega aquí una descripción (texto o markdown). Este texto se usa como contexto y también puede auditarse
-        en modo libre.
+        Pega una descripción (texto o markdown). Este texto se usa como contexto y puede auditarse en modo libre.
+        Si respondes el modo guiado, el score se calcula por el cuestionario.
       </p>
 
       <textarea
@@ -57,27 +57,42 @@
         <strong>Privacidad:</strong> Esto corre local en tu navegador. No se envía a ningún servidor.
       </div>
 
-      <!-- ✅ NUEVO: MODO GUIADO -->
+      <!-- ✅ MODO GUIADO -->
       <hr class="sep" />
 
-      <h2>Modo guiado</h2>
-      <p class="hint">
-        Responde estas preguntas para medir las dimensiones sin depender del texto libre.
-        (Ideal para auditoría y consistencia).
-      </p>
+      <div class="row" style="margin-top:0">
+        <div>
+          <h2 style="margin:0 0 6px 0">Modo guiado</h2>
+          <p class="hint" style="margin:0">
+            Responde para medir dimensiones sin depender del texto libre (ideal para auditoría y consistencia).
+          </p>
+        </div>
+        <div class="row-actions">
+          <button id="btnUseGuided" class="btn secondary" type="button">Usar modo guiado</button>
+        </div>
+      </div>
 
-      <!-- Este contenedor lo llenará app.js -->
-      <div id="questionnaire" class="dims"></div>
+      <!-- Contenedor que llena app.js -->
+      <div id="questionnaire" class="dims" style="margin-top:12px"></div>
     </section>
 
     <!-- COLUMNA DERECHA -->
     <section class="card">
-      <h2>Resultado</h2>
+      <div class="row" style="margin-top:0">
+        <h2 style="margin:0">Resultado</h2>
+        <!-- ✅ Indicador del modo activo -->
+        <div id="modeTag" class="pill">modo: —</div>
+      </div>
+
+      <!-- ✅ texto dinámico según modo -->
+      <p class="hint" id="modeHelp" style="margin-top:8px">
+        Espera tu texto o tus respuestas…
+      </p>
 
       <div class="scorebox">
         <div>
           <div class="score" id="score">—</div>
-          <div class="level" id="level">Espera tu texto o tus respuestas…</div>
+          <div class="level" id="level">—</div>
         </div>
         <div class="meter">
           <div class="bar" id="bar"></div>
@@ -118,3 +133,4 @@
   <script src="./app.js"></script>
 </body>
 </html>
+
