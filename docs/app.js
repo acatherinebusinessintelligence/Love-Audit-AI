@@ -136,7 +136,7 @@ function audit(projectText){
   });
 
   const total = results.reduce((acc, r) => acc + r.score_0_20, 0);
-  const score100 = Math.round(total * 5);
+  const score100 = total;
   return {
     score_0_100: score100,
     level: level(score100),
