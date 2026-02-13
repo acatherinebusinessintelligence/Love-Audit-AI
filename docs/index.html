@@ -6,6 +6,7 @@
   <title>Love Audit AI — Human-Centered AI Check</title>
   <link rel="stylesheet" href="./styles.css" />
 </head>
+
 <body>
   <header class="wrap">
     <div class="brand">
@@ -20,17 +21,24 @@
     </div>
 
     <div class="cta">
-      <button id="btnLoadExample" class="btn secondary">Cargar ejemplo</button>
-      <button id="btnClear" class="btn ghost">Limpiar</button>
+      <button id="btnLoadExample" class="btn secondary" type="button">Cargar ejemplo</button>
+      <button id="btnClear" class="btn ghost" type="button">Limpiar</button>
     </div>
   </header>
 
   <main class="wrap grid">
+    <!-- COLUMNA IZQUIERDA -->
     <section class="card">
       <h2>Describe tu proyecto</h2>
-      <p class="hint">Pega aquí una descripción (texto o markdown). Mientras escribes, se recalcula el score.</p>
+      <p class="hint">
+        Pega aquí una descripción (texto o markdown). Este texto se usa como contexto y también puede auditarse
+        en modo libre.
+      </p>
 
-      <textarea id="projectText" placeholder="Ej: Agente de ventas para seguimiento... datos: CRM... controles: aprobación humana..." rows="14"></textarea>
+      <textarea
+        id="projectText"
+        placeholder="Ej: Agente de ventas para seguimiento... datos: CRM... controles: aprobación humana..."
+        rows="12"></textarea>
 
       <div class="row">
         <label class="switch">
@@ -39,24 +47,37 @@
         </label>
 
         <div class="row-actions">
-          <button id="btnRun" class="btn">Auditar</button>
-          <button id="btnDownloadMd" class="btn secondary">Descargar .md</button>
-          <button id="btnDownloadHtml" class="btn secondary">Descargar .html</button>
+          <button id="btnRun" class="btn" type="button">Auditar</button>
+          <button id="btnDownloadMd" class="btn secondary" type="button">Descargar .md</button>
+          <button id="btnDownloadHtml" class="btn secondary" type="button">Descargar .html</button>
         </div>
       </div>
 
       <div class="note">
         <strong>Privacidad:</strong> Esto corre local en tu navegador. No se envía a ningún servidor.
       </div>
+
+      <!-- ✅ NUEVO: MODO GUIADO -->
+      <hr class="sep" />
+
+      <h2>Modo guiado</h2>
+      <p class="hint">
+        Responde estas preguntas para medir las dimensiones sin depender del texto libre.
+        (Ideal para auditoría y consistencia).
+      </p>
+
+      <!-- Este contenedor lo llenará app.js -->
+      <div id="questionnaire" class="dims"></div>
     </section>
 
+    <!-- COLUMNA DERECHA -->
     <section class="card">
       <h2>Resultado</h2>
 
       <div class="scorebox">
         <div>
           <div class="score" id="score">—</div>
-          <div class="level" id="level">Espera tu texto…</div>
+          <div class="level" id="level">Espera tu texto o tus respuestas…</div>
         </div>
         <div class="meter">
           <div class="bar" id="bar"></div>
@@ -76,9 +97,13 @@
       <details class="details">
         <summary>Ver cómo se calcula (explicable)</summary>
         <div class="calc">
-          <p><strong>Regla:</strong> base 12 puntos por dimensión, +2 por indicador positivo (máx +8),
-            −3 por indicador de riesgo (máx −12). Se limita de 0 a 20.</p>
-          <p>El score total es la suma de las 5 dimensiones (0–100).</p>
+          <p>
+            <strong>Modo guiado:</strong> cada pregunta puntúa (0–4). Por dimensión (5 preguntas) → 0–20.
+            Score total (5 dimensiones) → 0–100.
+          </p>
+          <p>
+            <strong>Modo libre:</strong> se usa heurística por indicadores (keywords) para estimar 0–20 por dimensión.
+          </p>
         </div>
       </details>
     </section>
@@ -88,7 +113,8 @@
     <span>Hecho para IA con propósito · Love Audit AI</span>
   </footer>
 
+  <!-- ✅ IMPORTANTE: questions.js DEBE IR ANTES que app.js -->
+  <script src="./questions.js"></script>
   <script src="./app.js"></script>
 </body>
 </html>
-
