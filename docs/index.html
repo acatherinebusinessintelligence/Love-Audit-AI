@@ -1,136 +1,167 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Love Audit AI — Human-Centered AI Check</title>
-  <link rel="stylesheet" href="./styles.css" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Love Audit AI · Autoevaluación de IA centrada en las personas</title>
+  <meta name="description" content="Herramienta abierta para autoevaluar un sistema de IA con el framework HUMANO: riesgo del caso de uso, controles con evidencia, decisión orientativa y plan de acción, con correspondencia a NIST AI RMF, la Ley de IA de la UE, Colombia, OCDE y UNESCO.">
+  <meta name="theme-color" content="#0b0b10">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%23b36bff'/%3E%3Cpath d='M16 25s-8-5-9.5-10A4.8 4.8 0 0 1 16 10a4.8 4.8 0 0 1 9.5 5C24 20 16 25 16 25z' fill='white'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./styles.css?v=2">
 </head>
-
 <body>
-  <header class="wrap">
-    <div class="brand">
-      <div class="badge">💜</div>
-      <div>
-        <h1>Love Audit AI</h1>
-        <p class="sub">
-          Auditoría rápida y explicable para proyectos de IA: impacto humano, transparencia, privacidad,
-          robustez y gobernanza.
-        </p>
+<a class="skip" href="#main">Saltar al contenido</a>
+
+<header class="wrap top">
+  <div class="brand">
+    <div class="logo" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-9-9a5 5 0 0 1 9-4 5 5 0 0 1 9 4c-2 4.6-9 9-9 9z"/></svg>
+    </div>
+    <div>
+      <h1>Love Audit AI</h1>
+      <p class="sub">Autoevaluación de sistemas de IA centrada en las personas, basada en el framework
+        <a href="https://doi.org/10.5281/zenodo.22285253" target="_blank" rel="noopener">HUMANO</a>.
+        Clasifica el riesgo del caso de uso, revisa la evidencia de tus controles y obtén un plan de acción.</p>
+    </div>
+  </div>
+  <div class="actions">
+    <div class="menu">
+      <button class="btn secondary" type="button" aria-haspopup="true" aria-expanded="false" data-menu="examples">Cargar ejemplo</button>
+      <div class="menu-list" id="menu-examples" hidden>
+        <button type="button" data-example="ventas">Agente de ventas (riesgo limitado)</button>
+        <button type="button" data-example="seleccion">Preselección de hojas de vida (riesgo alto)</button>
       </div>
     </div>
-
-    <div class="cta">
-      <button id="btnLoadExample" class="btn secondary" type="button">Cargar ejemplo</button>
-      <button id="btnClear" class="btn ghost" type="button">Limpiar</button>
+    <div class="menu">
+      <button class="btn secondary" type="button" aria-haspopup="true" aria-expanded="false" data-menu="export">Exportar</button>
+      <div class="menu-list" id="menu-export" hidden>
+        <button type="button" data-export="html">Reporte (.html)</button>
+        <button type="button" data-export="md">Reporte (.md)</button>
+        <button type="button" data-export="json">Respuestas (.json)</button>
+        <label class="menu-file">Importar respuestas (.json)<input type="file" id="importFile" accept="application/json,.json"></label>
+      </div>
     </div>
-  </header>
+    <button class="btn ghost" type="button" id="btnReset">Empezar de nuevo</button>
+  </div>
+</header>
 
-  <main class="wrap grid">
-    <!-- COLUMNA IZQUIERDA -->
-    <section class="card">
-      <h2>Describe tu proyecto</h2>
-      <p class="hint">
-        Pega una descripción (texto o markdown). Este texto se usa como contexto y puede auditarse en modo libre.
-        Si respondes el modo guiado, el score se calcula por el cuestionario.
-      </p>
+<div class="wrap">
+  <p class="notice"><strong>Herramienta educativa de autoevaluación.</strong> No es una certificación, una auditoría externa ni asesoría legal.
+    Todo se procesa en tu navegador: nada se envía a ningún servidor. Tus respuestas se guardan solo en este navegador.</p>
+</div>
 
-      <textarea
-        id="projectText"
-        placeholder="Ej: Agente de ventas para seguimiento... datos: CRM... controles: aprobación humana..."
-        rows="12"></textarea>
+<main id="main" class="wrap layout">
+  <div class="flow">
 
-      <div class="row">
-        <label class="switch">
-          <input id="toggleLive" type="checkbox" checked />
-          <span>Recalcular en vivo</span>
-        </label>
-
-        <div class="row-actions">
-          <button id="btnRun" class="btn" type="button">Auditar</button>
-          <button id="btnDownloadMd" class="btn secondary" type="button">Descargar .md</button>
-          <button id="btnDownloadHtml" class="btn secondary" type="button">Descargar .html</button>
-        </div>
+    <section class="card" aria-labelledby="s0">
+      <span class="step">Paso 0</span>
+      <h2 id="s0">Describe el sistema</h2>
+      <div class="fields">
+        <label>Nombre del sistema<input id="f_name" type="text" autocomplete="off" placeholder="Ej.: Asistente de preselección de hojas de vida"></label>
+        <label>Organización <span class="opt">(opcional)</span><input id="f_org" type="text" autocomplete="organization"></label>
+        <label>Quién evalúa <span class="opt">(opcional)</span><input id="f_author" type="text" autocomplete="name"></label>
       </div>
-
-      <div class="note">
-        <strong>Privacidad:</strong> Esto corre local en tu navegador. No se envía a ningún servidor.
-      </div>
-
-      <!-- ✅ MODO GUIADO -->
-      <hr class="sep" />
-
-      <div class="row" style="margin-top:0">
-        <div>
-          <h2 style="margin:0 0 6px 0">Modo guiado</h2>
-          <p class="hint" style="margin:0">
-            Responde para medir dimensiones sin depender del texto libre (ideal para auditoría y consistencia).
-          </p>
-        </div>
-        <div class="row-actions">
-          <button id="btnUseGuided" class="btn secondary" type="button">Usar modo guiado</button>
-        </div>
-      </div>
-
-      <!-- Contenedor que llena app.js -->
-      <div id="questionnaire" class="dims" style="margin-top:12px"></div>
+      <label class="block">Descripción
+        <textarea id="f_desc" rows="7" placeholder="Qué hace, para quién, con qué datos, quién decide, qué controles tiene…"></textarea>
+      </label>
+      <div class="gapbox" id="gapbox" aria-live="polite"></div>
     </section>
 
-    <!-- COLUMNA DERECHA -->
-    <section class="card">
-      <div class="row" style="margin-top:0">
-        <h2 style="margin:0">Resultado</h2>
-        <!-- ✅ Indicador del modo activo -->
-        <div id="modeTag" class="pill">modo: —</div>
-      </div>
+    <section class="card" aria-labelledby="s1">
+      <span class="step">Paso 1</span>
+      <h2 id="s1">Riesgo del caso de uso</h2>
+      <p class="hint">Antes de mirar los controles, define qué tan delicado es el uso. Esto no depende de qué tan bien esté hecho el sistema, sino de a quién puede afectar y cómo.</p>
+      <div id="riskForm"></div>
+    </section>
 
-      <!-- ✅ texto dinámico según modo -->
-      <p class="hint" id="modeHelp" style="margin-top:8px">
-        Espera tu texto o tus respuestas…
-      </p>
-
-      <div class="scorebox">
-        <div>
-          <div class="score" id="score">—</div>
-          <div class="level" id="level">—</div>
-        </div>
-        <div class="meter">
-          <div class="bar" id="bar"></div>
-        </div>
-      </div>
-
-      <div class="pillrow" id="pillrow"></div>
-
-      <hr class="sep" />
-
-      <h3>Dimensiones</h3>
-      <div id="dimensions" class="dims"></div>
-
-      <h3>Top riesgos</h3>
-      <ul id="topRisks" class="list"></ul>
-
-      <details class="details">
-        <summary>Ver cómo se calcula (explicable)</summary>
-        <div class="calc">
-          <p>
-            <strong>Modo guiado:</strong> cada pregunta puntúa (0–4). Por dimensión (5 preguntas) → 0–20.
-            Score total (5 dimensiones) → 0–100.
-          </p>
-          <p>
-            <strong>Modo libre:</strong> se usa heurística por indicadores (keywords) para estimar 0–20 por dimensión.
-          </p>
-        </div>
+    <section class="card" aria-labelledby="s2">
+      <span class="step">Paso 2</span>
+      <h2 id="s2">Controles HUMANO</h2>
+      <p class="hint">Para cada control, elige el nivel de evidencia que existe hoy. Responde «No sé» si no tienes certeza: es un vacío por averiguar, no un cero.</p>
+      <details class="scale-help">
+        <summary>¿Qué significa cada nivel?</summary>
+        <dl id="scaleHelp"></dl>
       </details>
+      <div id="controlsForm"></div>
     </section>
-  </main>
 
-  <footer class="wrap foot">
-    <span>Hecho para IA con propósito · Love Audit AI</span>
-  </footer>
+    <section class="card" aria-labelledby="s3" id="plan">
+      <span class="step">Paso 3</span>
+      <h2 id="s3">Plan de acción</h2>
+      <p class="hint">Primero los controles críticos para el nivel de riesgo; después, lo que no existe y los vacíos de evidencia.</p>
+      <ol class="plan" id="planList"></ol>
+    </section>
 
-  <!-- ✅ IMPORTANTE: questions.js DEBE IR ANTES que app.js -->
-  <script src="./questions.js"></script>
-  <script src="./app.js"></script>
+    <section class="card" aria-labelledby="s4">
+      <h2 id="s4">Cómo se calcula</h2>
+      <div class="calc">
+        <p><strong>1. Riesgo del caso de uso.</strong> Se clasifica en <em>inaceptable</em>, <em>alto</em>, <em>limitado</em> o <em>mínimo</em> con reglas explícitas inspiradas en la Ley de IA de la UE (prácticas prohibidas del art. 5 y ámbitos del Anexo III) y en la Ley 1581 de 2012 (datos sensibles). Si respondes «No sé», la clasificación se toma de forma conservadora.</p>
+        <p><strong>2. Controles.</strong> Cada control se califica con los niveles de evidencia de HUMANO: 0 no existe, 1 declarado, 2 documentado o medido, 3 verificado. El promedio por dimensión no mezcla «No sé» ni «No aplica».</p>
+        <p><strong>3. Controles críticos.</strong> Según el nivel de riesgo, algunos controles son críticos. Un control crítico en «No existe», «No sé» o sin responder impide aprobar.</p>
+        <p><strong>4. Decisión orientativa.</strong></p>
+        <ul>
+          <li><strong>Riesgo alto:</strong> se aprueba solo sin críticos pendientes, con todas las dimensiones al menos documentadas y sin vacíos de evidencia.</li>
+          <li><strong>Riesgo limitado:</strong> dos críticos inexistentes llevan a «No aprobar todavía»; uno, a «Con condiciones».</li>
+          <li><strong>Riesgo mínimo:</strong> basta con controles al menos declarados en todas las dimensiones.</li>
+        </ul>
+        <p>No hay un puntaje único: un buen promedio no compensa un control crítico ausente. El porcentaje de madurez es solo informativo.</p>
+        <p><strong>5. Detector de vacíos.</strong> Busca en tu descripción si mencionas cada tema y si lo mencionas como ausente («sin consentimiento»). No califica: solo te orienta.</p>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="s5">
+      <h2 id="s5">Correspondencia con otros marcos</h2>
+      <p class="hint">Dónde tratan temas parecidos otros marcos de referencia. Es orientativa: no indica cumplimiento ni equivalencia legal.</p>
+      <div class="table-wrap"><table class="map" id="mapTable"></table></div>
+      <ul class="fw-list" id="fwList"></ul>
+      <p class="hint small">Estado normativo verificado en noviembre de 2026. La Ley de IA de la UE aplica a sistemas que se ofrecen o usan en la UE; las obligaciones para sistemas de alto riesgo del Anexo III aplican desde el 2 de diciembre de 2027, tras el Ómnibus Digital. En Colombia no hay todavía una ley de IA aprobada: el Proyecto de Ley 043 de 2025 Senado se archivó por cambio de legislatura y un nuevo proyecto está en trámite. Sí rigen la Ley 1581 de 2012 y la Circular Externa 002 de 2024 de la SIC sobre datos personales en sistemas de IA. Verifica el estado vigente antes de tomar decisiones legales.</p>
+    </section>
+
+    <section class="card" aria-labelledby="s6">
+      <h2 id="s6">Limitaciones</h2>
+      <ul class="list">
+        <li>Es una autoevaluación: depende de la honestidad y la evidencia de quien responde.</li>
+        <li>No sustituye una auditoría independiente, una evaluación de impacto formal ni una opinión jurídica.</li>
+        <li>No garantiza ausencia de sesgos ni de daños; las reglas de decisión son orientativas y deben adaptarse al contexto.</li>
+        <li>Las correspondencias con marcos externos son una guía de lectura, no un análisis de cumplimiento.</li>
+      </ul>
+    </section>
+  </div>
+
+  <aside class="result" aria-labelledby="r0">
+    <div class="card sticky">
+      <h2 id="r0">Resultado</h2>
+      <div class="kv">
+        <span>Riesgo del caso de uso</span>
+        <strong class="tier" id="tier">Sin clasificar</strong>
+      </div>
+      <ul class="reasons" id="tierReasons"></ul>
+      <div class="decision" id="decision" aria-live="polite">
+        <span class="kicker">Decisión HUMANO (orientativa)</span>
+        <strong id="decisionLabel">Sin decisión todavía</strong>
+        <ul class="reasons" id="decisionReasons"></ul>
+      </div>
+      <h3>Evidencia por dimensión</h3>
+      <div class="dims" id="dimBars"></div>
+      <div class="counts" id="counts"></div>
+      <p class="maturity" id="maturity"></p>
+      <div class="result-actions">
+        <a class="btn" href="#plan">Ver plan de acción</a>
+        <button class="btn secondary" type="button" data-export="html">Descargar reporte</button>
+      </div>
+    </div>
+  </aside>
+</main>
+
+<footer class="wrap foot">
+  <p>Love Audit AI <span id="ver"></span> · Creado por <a href="https://acatherinebusinessintelligence.github.io/" target="_blank" rel="noopener">Alejandra Catherine Montaña Acevedo · DraCorazónIA</a>
+    · Basado en <a href="https://doi.org/10.5281/zenodo.22285253" target="_blank" rel="noopener">HUMANO (DOI 10.5281/zenodo.22285253)</a>
+    · <a href="https://github.com/acatherinebusinessintelligence/Love-Audit-AI" target="_blank" rel="noopener">Código y metodología</a>
+    · Código MIT, metodología CC BY 4.0</p>
+</footer>
+
+<script src="./questions.js?v=2"></script>
+<script src="./engine.js?v=2"></script>
+<script src="./app.js?v=2"></script>
 </body>
 </html>
-
