@@ -1,0 +1,29 @@
+cff-version: 1.2.0
+message: >-
+  Si utiliza Love Audit AI en investigación, docencia o proyectos, cítelo así.
+  Love Audit AI aplica el framework HUMANO (DOI 10.5281/zenodo.22285253).
+title: "Love Audit AI: herramienta de autoevaluación de sistemas de IA centrada en las personas, basada en el framework HUMANO"
+type: software
+authors:
+  - given-names: Alejandra Catherine
+    family-names: Montaña Acevedo
+version: "2.0.0"
+date-released: "2026-11-05"
+license: MIT
+url: "https://acatherinebusinessintelligence.github.io/Love-Audit-AI/"
+repository-code: "https://github.com/acatherinebusinessintelligence/Love-Audit-AI"
+references:
+  - type: software
+    title: "HUMANO: Framework metodológico para diseñar y auditar sistemas de inteligencia artificial centrados en las personas"
+    authors:
+      - given-names: Alejandra Catherine
+        family-names: Montaña Acevedo
+    version: "1.0.0"
+    doi: 10.5281/zenodo.22285253
+keywords:
+  - responsible AI
+  - AI governance
+  - AI risk assessment
+  - human-centered AI
+  - AI auditing
+  - self-assessment
